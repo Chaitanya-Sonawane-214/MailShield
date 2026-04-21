@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered email phishing detection system using BERT deep learning model. Analyze suspicious emails instantly.">
+    <title>PhishGuard — AI Email Phishing Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ── Animated Background Particles ── -->
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- ── Navigation ── -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <span class="brand-text">PhishGuard</span>
+            </div>
+            <div class="nav-links">
+                <a href="#analyzer" class="nav-link">Analyzer</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#faq" class="nav-link">FAQ</a>
+                <div class="nav-status" id="navStatus">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Hero Section ── -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Powered by BERT Deep Learning
+            </div>
+            <h1 class="hero-title">
+                Detect <span class="gradient-text">Phishing Emails</span><br>
+                in Seconds
+            </h1>
+            <p class="hero-subtitle">
+                Paste any suspicious email below and let our AI-powered model analyze it
+                with <strong>97.8% accuracy</strong>. Stay safe from phishing attacks.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">97.8%</span>
+                    <span class="stat-label">Accuracy</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">0.997</span>
+                    <span class="stat-label">ROC-AUC</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-value">18K+</span>
+                    <span class="stat-label">Trained On</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Analyzer Section ── -->
+    <main class="analyzer-section" id="analyzer">
+        <div class="analyzer-container">
+            <div class="analyzer-card glass-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </div>
+                    <h2 class="card-title">Email Analyzer</h2>
+                </div>
+                <div class="input-group">
+                    <textarea
+                        id="emailInput"
+                        class="email-textarea"
+                        placeholder="Paste the suspicious email content here...&#10;&#10;Example: Dear user, your account has been compromised. Click here to verify your identity immediately..."
+                        rows="8"
+                    ></textarea>
+                    <div class="input-footer">
+                        <span class="char-count" id="charCount">0 characters</span>
+                        <button class="btn-clear" id="btnClear" title="Clear input">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button class="btn-analyze" id="btnAnalyze">
+                    <span class="btn-text">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Analyze Email
+                    </span>
+                    <span class="btn-loading" style="display:none;">
+                        <div class="spinner"></div>
+                        Analyzing...
+                    </span>
+                </button>
+            </div>
+
+            <!-- ── Results Card ── -->
+            <div class="results-card glass-card" id="resultsCard" style="display:none;">
+                <div class="result-header" id="resultHeader">
+                    <div class="result-icon" id="resultIcon"></div>
+                    <div>
+                        <h3 class="result-verdict" id="resultVerdict"></h3>
+                        <p class="result-subtitle" id="resultSubtitle"></p>
+                    </div>
+                </div>
+
+                <!-- Confidence Gauge -->
+                <div class="gauge-container">
+                    <div class="gauge">
+                        <svg viewBox="0 0 200 120" class="gauge-svg">
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="14" stroke-linecap="round"/>
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" id="gaugeArc" stroke-dasharray="0 251.3"/>
+                            <defs>
+                                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#10b981"/>
+                                    <stop offset="50%" stop-color="#f59e0b"/>
+                                    <stop offset="100%" stop-color="#ef4444"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="gauge-value" id="gaugeValue">0%</div>
+                        <div class="gauge-label">Phishing Probability</div>
+                    </div>
+                </div>
+
+                <!-- Probability Bars -->
+                <div class="prob-bars">
+                    <div class="prob-row">
+                        <div class="prob-label">
+                            <span class="prob-dot safe"></span>
+                            Benign (Safe)
+                        </div>
+                        <div class="prob-bar-track">
+                            <div class="prob-bar-fill safe" id="barBenign" style="width:0%"></div>
+                        </div>
+                        <span class="prob-value" id="valBenign">0%</span>
+                    </div>
+                    <div class="prob-row">
+                        <div class="prob-label">
+                            <span class="prob-dot danger"></span>
+                            Phishing (Threat)
+                        </div>
+                        <div class="prob-bar-track">
+                            <div class="prob-bar-fill danger" id="barPhishing" style="width:0%"></div>
+                        </div>
+                        <span class="prob-value" id="valPhishing">0%</span>
+                    </div>
+                </div>
+
+                <button class="btn-analyze-another" id="btnAnother">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                    Analyze Another
+                </button>
+            </div>
+
+            <!-- ── Error Card ── -->
+            <div class="error-card glass-card" id="errorCard" style="display:none;">
+                <div class="error-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                </div>
+                <p class="error-text" id="errorText">Something went wrong.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ── How It Works ── -->
+    <section class="how-section" id="how-it-works">
+        <div class="section-container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to protect yourself</p>
+            <div class="steps-grid">
+                <div class="step-card glass-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                    </div>
+                    <h3>Paste Email</h3>
+                    <p>Copy the suspicious email content and paste it into the analyzer</p>
+                </div>
+                <div class="step-card glass-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3>AI Analysis</h3>
+                    <p>Our BERT model processes the text and detects phishing patterns</p>
+                </div>
+                <div class="step-card glass-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <h3>Get Verdict</h3>
+                    <p>Receive a clear verdict with confidence scores instantly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FAQ Section ── -->
+    <section class="faq-section" id="faq">
+        <div class="section-container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item glass-card">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What is email phishing?</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Email phishing is a type of cyber attack where attackers send fraudulent emails that appear to come from reputable sources. The goal is to steal sensitive data like login credentials, credit card numbers, or install malware.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>How accurate is this tool?</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our BERT-based model achieves 97.8% accuracy on the test dataset with a ROC-AUC of 0.997. It was trained on over 18,000 real-world email samples including both phishing and legitimate emails.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>What technology powers this?</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We use a fine-tuned BERT (Bidirectional Encoder Representations from Transformers) model, which is a state-of-the-art NLP model by Google. The backend runs on FastAPI with PyTorch for inference.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        <span>Is my email data stored?</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No. All analysis happens in real-time and nothing is stored. Your email text is sent to the local backend for inference and discarded immediately after producing the result.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>PhishGuard</span>
+            </div>
+            <p class="footer-text">Built with BERT &bull; FastAPI &bull; PyTorch</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

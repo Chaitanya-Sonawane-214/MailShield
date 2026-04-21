@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.env
+.venv/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+
+# Machine Learning / Large Data Files
+*.csv
+*.xlsx
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.h5
+*.onnx
+
+# Specific Project Directories that could be heavy
+data/*
+runs/*
+backend/models/text/bert_finetuned/*
+
+# Keep these empty directories tracking
+!data/.gitkeep
+!runs/.gitkeep
+!backend/models/text/bert_finetuned/.gitkeep
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
